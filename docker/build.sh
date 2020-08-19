@@ -6,7 +6,7 @@ mkdir build
 cd build
 
 cmake -DARM_NONE_EABI_TOOLCHAIN_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update -DNRF5_SDK_PATH=/opt/nRF5_SDK_15.3.0_59ac345 -DUSE_OPENOCD=1 ../
-make -j
+make -j 2
 
 /opt/mcuboot/scripts/imgtool.py create --align 4 --version 1.0.0 --header-size 32 --slot-size 475136 --pad-header src/pinetime-mcuboot-app.bin image.bin
 adafruit-nrfutil dfu genpkg --dev-type 0x0052 --application image.bin dfu.zip
