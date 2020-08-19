@@ -4,7 +4,4 @@ name: default
 
 steps:
   - name: greeting
-    image: alpine
-    commands:
-      - echo hello
-      - echo world
+    image: infinitime-build:latest
