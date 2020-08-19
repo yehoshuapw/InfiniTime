@@ -4,4 +4,5 @@ name: default
 
 steps:
   - name: greeting
-    image: infinitime-build:latest
+    pull: never
+    image: infinitime-build
