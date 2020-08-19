@@ -2,7 +2,18 @@ kind: pipeline
 type: docker
 name: default
 
+workspace:
+  path: /tmp/drone
+
 steps:
   - name: greeting
     pull: never
     image: infinitime-build
+    volumes:
+      - name: sources
+        path: /sources
+
+volumes:
+  - name: sources
+    host:
+      path: /tmp/drone
