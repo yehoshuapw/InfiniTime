@@ -100,12 +100,6 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Install npm
-        run: npm install
-
-      - name: Test node
-        run: npm test
-
       - name: Install lv_font_conv
         run: npm i lv_font_conv -g
 
