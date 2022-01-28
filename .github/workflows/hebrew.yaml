@@ -96,11 +96,12 @@ jobs:
           pip3 install --user adafruit-nrfutil
 
       - name: Install node
-        steps:
-        - uses: actions/setup-node@v2
-          with:
-            node-version: '14'
-        - run: npm test
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Test node
+        run: npm test
 
       - name: Install lv_font_conv
         run: npm i lv_font_conv -g
