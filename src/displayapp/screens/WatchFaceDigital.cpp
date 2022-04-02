@@ -32,7 +32,6 @@ WatchFaceDigital::WatchFaceDigital(DisplayApp* app,
     settingsController {settingsController},
     heartRateController {heartRateController},
     motionController {motionController} {
-  settingsController.SetClockFace(0);
 
   batteryIcon = lv_label_create(lv_scr_act(), nullptr);
   lv_label_set_text_static(batteryIcon, Symbols::batteryFull);
@@ -120,8 +119,9 @@ void WatchFaceDigital::Refresh() {
   }
 
   bleState = bleController.IsConnected();
-  if (bleState.IsUpdated()) {
-    lv_label_set_text_static(bleIcon, BleIcon::GetIcon(bleState.Get()));
+  bleRadioEnabled = bleController.IsRadioEnabled();
+  if (bleState.IsUpdated() || bleRadioEnabled.IsUpdated()) {
+    lv_label_set_text(bleIcon, BleIcon::GetIcon(bleState.Get()));
   }
   lv_obj_realign(batteryIcon);
   lv_obj_realign(batteryPlug);

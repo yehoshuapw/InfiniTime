@@ -17,6 +17,7 @@ Notifications::Notifications(DisplayApp* app,
   : Screen(app),
     notificationManager {notificationManager},
     alertNotificationService {alertNotificationService},
+    motorController {motorController},
     systemTask {systemTask},
     mode {mode} {
   notificationManager.ClearNewNotificationFlag();
@@ -29,7 +30,8 @@ Notifications::Notifications(DisplayApp* app,
                                                      notification.category,
                                                      notificationManager.NbNotifications(),
                                                      mode,
-                                                     alertNotificationService);
+                                                     alertNotificationService,
+                                                     motorController);
     validDisplay = true;
   } else {
     currentItem = std::make_unique<NotificationItem>("Notification",
@@ -38,7 +40,8 @@ Notifications::Notifications(DisplayApp* app,
                                                      notification.category,
                                                      notificationManager.NbNotifications(),
                                                      Modes::Preview,
-                                                     alertNotificationService);
+                                                     alertNotificationService,
+                                                     motorController);
   }
 
   if (mode == Modes::Preview) {
@@ -66,7 +69,7 @@ Notifications::Notifications(DisplayApp* app,
 Notifications::~Notifications() {
   lv_task_del(taskRefresh);
   // make sure we stop any vibrations before exiting
-  Controllers::MotorController::StopRinging();
+  motorController.StopRinging();
   systemTask.PushMessage(System::Messages::EnableSleeping);
   lv_obj_clean(lv_scr_act());
 }
@@ -87,7 +90,7 @@ void Notifications::Refresh() {
 
 void Notifications::OnPreviewInteraction() {
   systemTask.PushMessage(System::Messages::EnableSleeping);
-  Controllers::MotorController::StopRinging();
+  motorController.StopRinging();
   if (timeoutLine != nullptr) {
     lv_obj_del(timeoutLine);
     timeoutLine = nullptr;
@@ -125,7 +128,8 @@ bool Notifications::OnTouchEvent(Pinetime::Applications::TouchEvents event) {
                                                        previousNotification.category,
                                                        notificationManager.NbNotifications(),
                                                        mode,
-                                                       alertNotificationService);
+                                                       alertNotificationService,
+                                                       motorController);
     }
       return true;
     case Pinetime::Applications::TouchEvents::SwipeUp: {
@@ -150,7 +154,8 @@ bool Notifications::OnTouchEvent(Pinetime::Applications::TouchEvents event) {
                                                        nextNotification.category,
                                                        notificationManager.NbNotifications(),
                                                        mode,
-                                                       alertNotificationService);
+                                                       alertNotificationService,
+                                                       motorController);
     }
       return true;
     default:
@@ -171,8 +176,9 @@ Notifications::NotificationItem::NotificationItem(const char* title,
                                                   Controllers::NotificationManager::Categories category,
                                                   uint8_t notifNb,
                                                   Modes mode,
-                                                  Pinetime::Controllers::AlertNotificationService& alertNotificationService)
-  : mode {mode}, alertNotificationService {alertNotificationService} {
+                                                  Pinetime::Controllers::AlertNotificationService& alertNotificationService,
+                                                  Pinetime::Controllers::MotorController& motorController)
+  : mode {mode}, alertNotificationService {alertNotificationService}, motorController {motorController} {
   lv_obj_t* container1 = lv_cont_create(lv_scr_act(), NULL);
 
   lv_obj_set_style_local_bg_color(container1, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, lv_color_hex(0x222222));
@@ -192,15 +198,18 @@ Notifications::NotificationItem::NotificationItem(const char* title,
 
   lv_obj_t* alert_type = lv_label_create(lv_scr_act(), nullptr);
   lv_obj_set_style_local_text_color(alert_type, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, lv_color_hex(0x888888));
-  if (title == nullptr)
-    title = "Notification";
-  char* pchar;
-  pchar = strchr(title, '\n');
-  while (pchar != nullptr) {
-    *pchar = ' ';
-    pchar = strchr(pchar + 1, '\n');
+  if(title == nullptr) {
+    lv_label_set_text_static(alert_type, "Notification");
+  } else {
+    // copy title to label and replace newlines with spaces
+    lv_label_set_text(alert_type, title);
+    char *pchar = strchr(lv_label_get_text(alert_type), '\n');
+    while (pchar != nullptr) {
+      *pchar = ' ';
+      pchar = strchr(pchar + 1, '\n');
+    }
+    lv_label_refr_text(alert_type);
   }
-  lv_label_set_text(alert_type, title);
   lv_label_set_long_mode(alert_type, LV_LABEL_LONG_SROLL_CIRC);
   lv_obj_set_width(alert_type, 180);
   lv_obj_align(alert_type, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 16);
@@ -269,7 +278,7 @@ void Notifications::NotificationItem::OnCallButtonEvent(lv_obj_t* obj, lv_event_
     return;
   }
 
-  Controllers::MotorController::StopRinging();
+  motorController.StopRinging();
 
   if (obj == bt_accept) {
     alertNotificationService.AcceptIncomingCall();
