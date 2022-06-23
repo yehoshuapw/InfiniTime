@@ -1,6 +1,6 @@
 # [InfiniTime](https://github.com/InfiniTimeOrg/InfiniTime)
 
-[![Build PineTime Firmware](https://github.com/InfiniTimeOrg/InfiniTime/workflows/Build%20PineTime%20Firmware/badge.svg?branch=master)](https://github.com/InfiniTimeOrg/InfiniTime/actions)
+[![Build PineTime Firmware](https://github.com/yehoshuapw/InfiniTime/actions/workflows/main.yml/badge.svg?branch=hebrew-support)](https://github.com/yehoshuapw/InfiniTime/actions/workflows/main.yml)
 
 ![InfiniTime logo](images/infinitime-logo-small.jpg "InfiniTime Logo")
 
@@ -11,6 +11,10 @@ Fast open-source firmware for the [PineTime smartwatch](https://www.pine64.org/p
  - [Getting started with InfiniTime](doc/gettingStarted/gettingStarted-1.0.md)
  - [Updating the software](doc/gettingStarted/updating-software.md)
  - [About the firmware and bootloader](doc/gettingStarted/about-software.md)
+
+### Hebrew
+to use hebrew, and get correct RTL, GadgetBridge has a setting to do that: Settings->Language and region settings->Right To Left Support->Right-To-Left
+
 ### Companion apps
  - [Gadgetbridge](https://gadgetbridge.org/) (Android)
  - [AmazFish](https://openrepos.net/content/piggz/amazfish/) (SailfishOS)
