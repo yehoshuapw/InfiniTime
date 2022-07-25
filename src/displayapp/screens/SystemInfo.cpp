@@ -136,20 +136,25 @@ std::unique_ptr<Screen> SystemInfo::CreateScreen2() {
   uptimeSeconds = uptimeSeconds % secondsInAMinute;
   // TODO handle more than 100 days of uptime
 
+#ifndef TARGET_DEVICE_NAME
+  #define TARGET_DEVICE_NAME "UNKNOWN"
+#endif
+
   lv_obj_t* label = lv_label_create(lv_scr_act(), nullptr);
   lv_label_set_recolor(label, true);
   lv_label_set_text_fmt(label,
-                        "#808080 Date# %02d/%02d/%04d\n"
+                        "#808080 Date# %04d-%02d-%02d\n"
                         "#808080 Time# %02d:%02d:%02d\n"
                         "#808080 Uptime#\n %02lud %02lu:%02lu:%02lu\n"
                         "#808080 Battery# %d%%/%03imV\n"
                         "#808080 Backlight# %s\n"
                         "#808080 Last reset# %s\n"
                         "#808080 Accel.# %s\n"
-                        "#808080 Touch.# %x.%x.%x\n",
-                        dateTimeController.Day(),
-                        static_cast<uint8_t>(dateTimeController.Month()),
+                        "#808080 Touch.# %x.%x.%x\n"
+                        "#808080 Model# %s",
                         dateTimeController.Year(),
+                        static_cast<uint8_t>(dateTimeController.Month()),
+                        dateTimeController.Day(),
                         dateTimeController.Hours(),
                         dateTimeController.Minutes(),
                         dateTimeController.Seconds(),
@@ -164,7 +169,8 @@ std::unique_ptr<Screen> SystemInfo::CreateScreen2() {
                         ToString(motionController.DeviceType()),
                         touchPanel.GetChipId(),
                         touchPanel.GetVendorId(),
-                        touchPanel.GetFwVersion());
+                        touchPanel.GetFwVersion(),
+                        TARGET_DEVICE_NAME);
   lv_obj_align(label, lv_scr_act(), LV_ALIGN_CENTER, 0, 0);
   return std::make_unique<Screens::Label>(1, 5, app, label);
 }
