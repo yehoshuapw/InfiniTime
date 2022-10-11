@@ -161,10 +161,10 @@ typedef void* lv_anim_user_data_t;
 #define LV_USE_OUTLINE  0
 
 /*1: enable pattern drawing on rectangles*/
-#define LV_USE_PATTERN  0
+#define LV_USE_PATTERN  1
 
 /*1: enable value string drawing on rectangles*/
-#define LV_USE_VALUE_STR    1
+#define LV_USE_VALUE_STR    0
 
 /* 1: Use other blend modes than normal (`LV_BLEND_MODE_...`)*/
 #define LV_USE_BLEND_MODES      0
