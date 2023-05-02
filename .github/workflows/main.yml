@@ -3,7 +3,7 @@ name: CI
 # Run this workflow whenever the build may be affected
 on:
   push:
-    branches: [ main ]
+    branches: [ main, hebrew-support ]
     paths-ignore:
       - 'doc/**'
       - '**.md'
